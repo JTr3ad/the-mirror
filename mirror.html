@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Mirror — Jonathan Treadway</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0a;
+    --bg2: #111111;
+    --bg3: #161616;
+    --border: #1e1e1e;
+    --border2: #2a2a2a;
+    --text: #f0ede8;
+    --text2: #a8a8a0;
+    --text3: #787870;
+    --accent: #c8b89a;
+    --accent2: #8a7a65;
+    --white: #f0ede8;
+  }
+
+  html, body {
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  .screen {
+    display: none;
+    min-height: 100vh;
+    animation: fadeIn 0.6s ease forwards;
+  }
+
+  .screen.active { display: flex; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  #intro {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 24px;
+    text-align: center;
+    min-height: 100vh;
+  }
+
+  .intro-eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 32px;
+  }
+
+  .intro-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(52px, 10vw, 96px);
+    font-weight: 300;
+    line-height: 0.9;
+    color: var(--text);
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+
+  .intro-title em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .intro-rule {
+    width: 40px;
+    height: 1px;
+    background: var(--border2);
+    margin: 32px auto;
+  }
+
+  .intro-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(16px, 3vw, 20px);
+    font-style: italic;
+    color: var(--text2);
+    max-width: 440px;
+    margin: 0 auto 16px;
+    line-height: 1.5;
+  }
+
+  .intro-body {
+    font-size: 13px;
+    color: var(--text3);
+    max-width: 380px;
+    margin: 0 auto 48px;
+    line-height: 1.8;
+  }
+
+  .intro-body strong {
+    color: var(--text2);
+    font-weight: 400;
+  }
+
+  .btn-primary {
+    display: inline-block;
+    padding: 16px 40px;
+    background: var(--accent);
+    color: #0a0a0a;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+  }
+
+  .btn-primary:hover {
+    background: var(--white);
+    transform: translateY(-1px);
+  }
+
+  .intro-disclaimer {
+    margin-top: 24px;
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: 0.05em;
+  }
+
+  #questions {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 24px;
+    min-height: 100vh;
+  }
+
+  .q-container {
+    width: 100%;
+    max-width: 600px;
+  }
+
+  .q-progress-bar {
+    width: 100%;
+    height: 1px;
+    background: var(--border);
+    margin-bottom: 48px;
+    position: relative;
+  }
+
+  .q-progress-fill {
+    height: 100%;
+    background: var(--accent);
+    transition: width 0.4s ease;
+  }
+
+  .q-progress-label {
+    position: absolute;
+    right: 0;
+    top: 8px;
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 0.15em;
+  }
+
+  .q-number {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 20px;
+  }
+
+  .q-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(22px, 4vw, 30px);
+    font-weight: 400;
+    line-height: 1.25;
+    color: var(--text);
+    margin-bottom: 40px;
+    max-width: 520px;
+  }
+
+  .q-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .q-option {
+    padding: 18px 24px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text2);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 300;
+    line-height: 1.5;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+  }
+
+  .q-option::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--accent);
+    transform: scaleY(0);
+    transition: transform 0.2s ease;
+  }
+
+  .q-option:hover {
+    border-color: var(--border2);
+    color: var(--text);
+    background: var(--bg2);
+  }
+
+  .q-option:hover::before { transform: scaleY(1); }
+
+  .q-option.selected {
+    border-color: var(--accent2);
+    color: var(--text);
+    background: var(--bg2);
+  }
+
+  .q-option.selected::before { transform: scaleY(1); }
+
+  .q-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 40px;
+  }
+
+  .btn-back {
+    background: none;
+    border: none;
+    color: var(--text3);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 8px 0;
+    transition: color 0.2s;
+  }
+
+  .btn-back:hover { color: var(--text2); }
+
+  .btn-next {
+    padding: 14px 32px;
+    background: transparent;
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .btn-next:hover:not(:disabled) {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .btn-next:disabled { opacity: 0.3; cursor: not-allowed; }
+  .btn-next.ready { border-color: var(--accent); color: var(--accent); }
+
+  #loading {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    text-align: center;
+    padding: 40px 24px;
+  }
+
+  .loading-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-style: italic;
+    color: var(--text2);
+    margin-bottom: 32px;
+  }
+
+  .loading-dots { display: flex; gap: 8px; justify-content: center; }
+
+  .loading-dot {
+    width: 4px;
+    height: 4px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+
+  .loading-dot:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dot:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes pulse {
+    0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
+    40% { opacity: 1; transform: scale(1); }
+  }
+
+  #result {
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 80px 24px;
+    min-height: 100vh;
+  }
+
+  .result-container { width: 100%; max-width: 620px; }
+
+  .result-eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 24px;
+  }
+
+  .result-pattern {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 7vw, 60px);
+    font-weight: 300;
+    line-height: 1.0;
+    color: var(--text);
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+
+  .result-pattern em { font-style: italic; color: var(--accent); }
+
+  .result-rule {
+    width: 40px;
+    height: 1px;
+    background: var(--border2);
+    margin: 28px 0;
+  }
+
+  .result-body {
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.9;
+    margin-bottom: 16px;
+  }
+
+  .result-body strong { color: var(--text); font-weight: 400; }
+
+  .result-cost {
+    border-left: 2px solid var(--border2);
+    padding: 20px 24px;
+    margin: 32px 0;
+    background: var(--bg2);
+  }
+
+  .result-cost-label {
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 12px;
+  }
+
+  .result-cost-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-style: italic;
+    color: var(--text2);
+    line-height: 1.5;
+  }
+
+  .result-cta-block {
+    margin-top: 48px;
+    padding: 40px;
+    border: 1px solid var(--border);
+    background: var(--bg2);
+    text-align: center;
+  }
+
+  .result-cta-label {
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 16px;
+  }
+
+  .result-cta-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+
+  .result-cta-text {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.7;
+    max-width: 400px;
+    margin: 0 auto 28px;
+  }
+
+  .result-cta-price {
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: 0.1em;
+    margin-top: 16px;
+  }
+
+  .result-jonathan {
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+  }
+
+  .result-jonathan-text {
+    font-size: 13px;
+    color: var(--text3);
+    line-height: 1.8;
+    margin-bottom: 16px;
+  }
+
+  .result-jonathan-sig {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--text2);
+  }
+
+  .result-error { font-size: 13px; color: var(--text2); line-height: 1.8; }
+
+  @media (max-width: 480px) {
+    .q-option { padding: 16px 18px; font-size: 12px; }
+    .result-cta-block { padding: 28px 20px; }
+  }
+
+  .bio-block {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    max-width: 480px;
+    margin: 32px auto 0;
+    text-align: left;
+    padding: 24px;
+    border: 1px solid var(--border);
+    background: var(--bg2);
+  }
+
+  .bio-photo-wrap {
+    width: 100px;
+    height: 120px;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  .bio-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 18%;
+    display: block;
+    filter: grayscale(100%);
+  }
+
+  .bio-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+  }
+
+  .bio-line {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+</style>
+</head>
+<body>
+
+<!-- INTRO -->
+<div id="intro" class="screen active">
+  <div>
+    <div class="intro-eyebrow">Jonathan Treadway</div>
+    <div class="intro-title">The <em>Mirror</em></div>
+    <div class="intro-rule"></div>
+    <div class="intro-body">
+      Eight questions. Ten minutes.<br>
+      <strong>No generic advice. No motivational BS.</strong><br>
+      Just an honest look at who you've been up to now.
+    </div>
+
+    <button class="btn-primary" onclick="startQuiz()">Start The Mirror</button>
+    <div class="intro-disclaimer">Free. Takes about 10 minutes. Be honest.</div>
+
+    <!-- BIO — below the button -->
+    <div class="bio-block">
+      <div class="bio-photo-wrap">
+        <img class="bio-photo" src="quiz-image.jpg" alt="Jonathan Treadway">
+      </div>
+      <div class="bio-text">
+        <div class="bio-name">Jonathan Treadway</div>
+        <div class="bio-line">You know the man you're supposed to be. The current version of you keeps sabotaging it. I help men figure out why.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- QUESTIONS -->
+<div id="questions" class="screen">
+  <div class="q-container">
+    <div class="q-progress-bar">
+      <div class="q-progress-fill" id="progressFill"></div>
+      <div class="q-progress-label" id="progressLabel"></div>
+    </div>
+    <div class="q-number" id="qNumber"></div>
+    <div class="q-text" id="qText"></div>
+    <div class="q-options" id="qOptions"></div>
+    <div class="q-nav">
+      <button class="btn-back" id="btnBack" onclick="prevQuestion()">← Back</button>
+      <button class="btn-next" id="btnNext" onclick="nextQuestion()" disabled>Continue</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOADING -->
+<div id="loading" class="screen">
+  <div class="loading-title">Reading your answers...</div>
+  <div class="loading-dots">
+    <div class="loading-dot"></div>
+    <div class="loading-dot"></div>
+    <div class="loading-dot"></div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="result" class="screen">
+  <div class="result-container" id="resultContent"></div>
+</div>
+
+<script>
+const questions = [
+  {
+    text: "You set your alarm for early. It goes off. What actually happens?",
+    options: [
+      { text: "I get up. It's not negotiable.", scores: { P: 0, E: 0, C: 0, D: 0 } },
+      { text: "I snooze it once and still get up.", scores: { P: 1, E: 0, C: 0, D: 1 } },
+      { text: "I tell myself I'll do it tomorrow and go back to sleep.", scores: { P: 3, E: 1, C: 0, D: 1 } },
+      { text: "I don't even set it anymore. I already know I won't get up.", scores: { P: 1, E: 0, C: 0, D: 3 } }
+    ]
+  },
+  {
+    text: "You've told yourself you're going to change something specific. A week later, where are you?",
+    options: [
+      { text: "I'm doing it. Not perfectly but I'm doing it.", scores: { P: 0, E: 0, C: 0, D: 0 } },
+      { text: "I started strong and slowed down but I'm still going.", scores: { P: 1, E: 1, C: 0, D: 1 } },
+      { text: "I had a good few days and then something came up and I stopped.", scores: { P: 3, E: 2, C: 0, D: 1 } },
+      { text: "I already forgot I said that.", scores: { P: 1, E: 0, C: 0, D: 3 } }
+    ]
+  },
+  {
+    text: "It's been a long hard day. You're stressed. What do you actually reach for?",
+    options: [
+      { text: "Something physical — a walk, workout, something that moves it through me.", scores: { P: 0, E: 0, C: 0, D: 0 } },
+      { text: "I sit with it. Try to understand what's going on.", scores: { P: 0, E: 0, C: 1, D: 0 } },
+      { text: "Something that takes the edge off. Drink, phone, food — whatever works.", scores: { P: 0, E: 3, C: 0, D: 1 } },
+      { text: "Nothing specific. I zone out until I feel better.", scores: { P: 1, E: 2, C: 0, D: 2 } }
+    ]
+  },
+  {
+    text: "You have a goal you care about. You have a free hour right now. What happens?",
+    options: [
+      { text: "I work on it. That's what the hour is for.", scores: { P: 0, E: 0, C: 0, D: 0 } },
+      { text: "I think about working on it and do a little.", scores: { P: 1, E: 0, C: 1, D: 1 } },
+      { text: "I scroll or watch something and feel guilty after.", scores: { P: 1, E: 2, C: 0, D: 2 } },
+      { text: "I convince myself I need to research more before I start.", scores: { P: 0, E: 1, C: 3, D: 1 } }
+    ]
+  },
+  {
+    text: "Someone asks about the goal you set three months ago. What's true?",
+    options: [
+      { text: "I'm making real progress. Not where I want to be but moving.", scores: { P: 0, E: 0, C: 0, D: 0 } },
+      { text: "I'm inconsistent but I haven't quit.", scores: { P: 2, E: 1, C: 0, D: 1 } },
+      { text: "I quietly abandoned it but haven't admitted that to anyone.", scores: { P: 2, E: 1, C: 0, D: 2 } },
+      { text: "I've set so many goals I can't keep track.", scores: { P: 2, E: 0, C: 1, D: 2 } }
+    ]
+  },
+  {
+    text: "You know exactly what you need to do today. You don't do it. What reason do you give yourself?",
+    options: [
+      { text: "I don't let myself off the hook. I do it anyway.", scores: { P: 0, E: 0, C: 0, D: 0 } },
+      { text: "I'm overwhelmed. I need a day.", scores: { P: 1, E: 1, C: 0, D: 1 } },
+      { text: "I'll feel more like it tomorrow. Today's not the right day.", scores: { P: 2, E: 2, C: 0, D: 2 } },
+      { text: "I need to learn more before I'm ready to actually do it.", scores: { P: 0, E: 0, C: 3, D: 1 } }
+    ]
+  },
+  {
+    text: "How many books, courses, or programs have you bought or started in the last year?",
+    options: [
+      { text: "A few. And I've actually applied what I learned.", scores: { P: 0, E: 0, C: 0, D: 0 } },
+      { text: "Several. I apply some of it.", scores: { P: 1, E: 0, C: 1, D: 0 } },
+      { text: "Too many. I finish almost none of them.", scores: { P: 1, E: 0, C: 2, D: 1 } },
+      { text: "I keep buying them but haven't started most of them.", scores: { P: 0, E: 0, C: 3, D: 1 } }
+    ]
+  },
+  {
+    text: "It's Sunday night. You think about the week ahead. What's honest?",
+    options: [
+      { text: "I have a plan and I'm ready to execute it.", scores: { P: 0, E: 0, C: 0, D: 0 } },
+      { text: "I have a rough idea but it's not locked in.", scores: { P: 1, E: 0, C: 0, D: 1 } },
+      { text: "I feel behind before the week even starts.", scores: { P: 2, E: 1, C: 1, D: 1 } },
+      { text: "I don't think about it. I just see what happens.", scores: { P: 0, E: 1, C: 0, D: 3 } }
+    ]
+  }
+];
+
+const patterns = {
+  P: {
+    name: "The Promiser",
+    subtitle: "You keep making the same promise to yourself.",
+    body: [
+      "You've told yourself you were going to quit. Start. Change. Fix it. How many times now?",
+      "You feel good about it when you say it. And then you're tired. Or you don't feel like it. Or it's not the right day. And you let yourself off the hook. Just this once. And then again. And again.",
+      "You've been having the same conversation with yourself for so long that your word doesn't mean anything to you anymore. You've broken so many promises to yourself that it's just your normal behavior at this point. You tell yourself you're going to do something, and most of the time, you don't even try. It just sounds good.",
+      "That's what's been getting in your way. Not motivation. Not even discipline. <strong>The gap between what you say you'll do and what you actually do has grown so wide that you stop even trying.</strong> Think about someone in your life who constantly told you they were going to do something and never did. You stopped believing them. You're doing that to yourself. Which is worse."
+    ],
+    cost: "Every broken promise costs you something you can't get back — your own trust. And a man who doesn't trust himself can't build anything that lasts."
+  },
+  E: {
+    name: "The Escaper",
+    subtitle: "When it gets uncomfortable, you find a way out.",
+    body: [
+      "When life gets hard — when the pressure builds, when the discomfort shows up — you reach for something that takes the edge off.",
+      "It might be a drink. The phone. Food. Anything that creates enough distance between you and what you're actually feeling. And it works, for a while. That's why you keep doing it.",
+      "The vice is a problem. But it's a symptom, not the cause. The real problem is what you're using it to avoid.",
+      "You keep reaching for the escape because in that moment, it's easier than sitting with yourself. Maybe there's something you're avoiding. Maybe it's just become what you do. Either way, you're not choosing it anymore. It's choosing you."
+    ],
+    cost: "Every escape costs you a day. Enough days and you look up and realize years have passed and the thing you were running from is still right there."
+  },
+  C: {
+    name: "The Collector",
+    subtitle: "You mistake learning for doing.",
+    body: [
+      "You're one of the most informed men in the room. You've read the books, listened to the podcasts, bought the courses. You understand the frameworks. You can talk about identity, habits, mindset, discipline — all of it.",
+      "And you're still in the same place you were two years ago.",
+      "That's the pattern. Collecting information feels like progress. It's comfortable, it's stimulating, and it keeps you from having to do the thing that actually requires something from you — starting before you're ready.",
+      "There's always one more book. One more framework. One more piece of information you need before you can actually begin. But the truth is you've had enough information for a long time. <strong>What you've been avoiding isn't knowledge. It's the vulnerability of doing the work and finding out what you're actually made of.</strong>"
+    ],
+    cost: "Every book you read without applying it is another way of staying comfortable while telling yourself you're making progress. The gap between knowing and doing is where years go."
+  },
+  D: {
+    name: "The Drifter",
+    subtitle: "You've been letting life happen to you.",
+    body: [
+      "You don't have one specific thing getting in your way. You have the absence of something — direction. You've been reacting to life instead of designing it. You just wake up and go where the current takes you, instead of being intentional with the direction of your life.",
+      "It's not that you don't care. You do. But somewhere along the way the idea of actually deciding what you want — and building toward it with intention — started feeling like too much. So you stopped deciding. You just kept moving.",
+      "The problem with drifting is that it feels fine most of the time. There's no single disaster. Just a slow accumulation of days that weren't quite what you wanted, weeks that blurred together, years that passed without much to show for them.",
+      "<strong>The man you're supposed to be isn't going to show up by accident. He requires a decision. And right now, you haven't made it.</strong>"
+    ],
+    cost: "Drifting doesn't feel like failure. That's what makes it dangerous. By the time most men realize how far off course they've gone, years have passed."
+  }
+};
+
+let current = 0;
+let answers = [];
+let scores = { P: 0, E: 0, C: 0, D: 0 };
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active');
+    s.style.display = 'none';
+  });
+  const el = document.getElementById(id);
+  el.style.display = 'flex';
+  setTimeout(() => el.classList.add('active'), 10);
+}
+
+function startQuiz() {
+  current = 0;
+  answers = [];
+  scores = { P: 0, E: 0, C: 0, D: 0 };
+  showScreen('questions');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const pct = Math.round(((current) / questions.length) * 100);
+
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = (current + 1) + ' of ' + questions.length;
+  document.getElementById('qNumber').textContent = 'Question ' + String(current + 1).padStart(2, '0');
+  document.getElementById('qText').textContent = q.text;
+
+  const optionsEl = document.getElementById('qOptions');
+  optionsEl.innerHTML = '';
+
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'q-option';
+    btn.textContent = opt.text;
+    if (answers[current] === i) btn.classList.add('selected');
+    btn.onclick = () => selectOption(i);
+    optionsEl.appendChild(btn);
+  });
+
+  document.getElementById('btnBack').style.visibility = current === 0 ? 'hidden' : 'visible';
+  const nextBtn = document.getElementById('btnNext');
+  const hasAnswer = answers[current] !== undefined;
+  nextBtn.disabled = !hasAnswer;
+  if (hasAnswer) nextBtn.classList.add('ready');
+  else nextBtn.classList.remove('ready');
+  nextBtn.textContent = current === questions.length - 1 ? 'See My Result' : 'Continue';
+}
+
+function selectOption(index) {
+  answers[current] = index;
+  document.querySelectorAll('.q-option').forEach((btn, i) => {
+    btn.classList.toggle('selected', i === index);
+  });
+  const nextBtn = document.getElementById('btnNext');
+  nextBtn.disabled = false;
+  nextBtn.classList.add('ready');
+}
+
+function nextQuestion() {
+  if (answers[current] === undefined) return;
+  const opt = questions[current].options[answers[current]];
+  Object.keys(opt.scores).forEach(k => scores[k] += opt.scores[k]);
+
+  if (current < questions.length - 1) {
+    current++;
+    renderQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function prevQuestion() {
+  if (current > 0) {
+    const opt = questions[current - 1].options[answers[current - 1]];
+    if (opt) Object.keys(opt.scores).forEach(k => scores[k] -= opt.scores[k]);
+    current--;
+    renderQuestion();
+  }
+}
+
+function getDominantPattern() {
+  return Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
+}
+
+async function showResult() {
+  showScreen('loading');
+
+  const dominant = getDominantPattern();
+  const pattern = patterns[dominant];
+
+  const answerSummary = questions.map((q, i) => {
+    const ans = answers[i] !== undefined ? q.options[answers[i]].text : 'No answer';
+    return `Q${i+1}: ${q.text}\nAnswer: ${ans}`;
+  }).join('\n\n');
+
+  const prompt = `You are Jonathan Treadway — a men's coach known for being direct, plain-spoken, and deeply honest. No therapy speak. No fluff. No motivational poster language. Short sentences. Real voice.
+
+A man just completed The Mirror diagnostic. Based on his answers, who he's been is: ${pattern.name} — ${pattern.subtitle}
+
+His answers:
+${answerSummary}
+
+Write a short personal note (3-4 sentences max) that speaks directly to HIM based on his specific answers. Don't describe his type generally — reference what he actually answered. Make it feel like you've been watching him. Start with "Here's what I see." Don't use em dashes. Don't use any of these words: journey, empower, transformative, level up, healing, hustle, grind, next level, show up fully, best version of yourself, stepping into your full potential, pattern, fluff. Sound like a real man talking to another real man.`;
+
+  let personalNote = '';
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await response.json();
+    if (data.content && data.content[0]) {
+      personalNote = data.content[0].text;
+    }
+  } catch (e) {
+    personalNote = '';
+  }
+
+  showScreen('result');
+
+  const container = document.getElementById('resultContent');
+
+  container.innerHTML = `
+    <div class="result-eyebrow">Who You've Been</div>
+    <div class="result-pattern">${pattern.name.split(' ')[0]} <em>${pattern.name.split(' ').slice(1).join(' ')}</em></div>
+    <div class="result-rule"></div>
+
+    ${pattern.body.map(p => `<div class="result-body">${p}</div>`).join('')}
+
+    <div class="result-cost">
+      <div class="result-cost-label">What This Has Cost You</div>
+      <div class="result-cost-text">${pattern.cost}</div>
+    </div>
+
+    ${personalNote ? `
+    <div class="result-jonathan">
+      <div class="result-jonathan-text">${personalNote}</div>
+      <div class="result-jonathan-sig">—Jonathan</div>
+    </div>
+    ` : ''}
+
+    <div class="result-cta-block">
+      <div class="result-cta-label">What Comes Next</div>
+      <div class="result-cta-title">The Shift</div>
+      <div class="result-cta-text">
+        The Mirror showed you who you've been. The Shift is where you decide who you're no longer willing to be. One sitting. Five sections. You leave with two non-negotiables, and a new standard for your life.
+            </div>
+      <button class="btn-primary" onclick="window.location.href='https://shift.jonathantreadway.com'">
+        Get The Shift — $27
+      </button>
+      <div class="result-cta-price">One time. Instant access. No fluff.</div>
+    </div>
+  `;
+}
+</script>
+</body>
+</html>
