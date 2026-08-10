@@ -4,44 +4,32 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Mirror — Jonathan Treadway</title>
-<meta name="description" content="You know the man you're supposed to be. The current version of you keeps sabotaging it. Take The Mirror and find out exactly why.">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<meta name="description" content="You know exactly who you're supposed to be. You keep getting in his way. Take The Mirror and find out exactly why.">
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg: #0a0a0a;
-    --bg2: #111111;
-    --bg3: #161616;
-    --border: #1e1e1e;
-    --border2: #2a2a2a;
-    --text: #f0ede8;
-    --text2: #a8a8a0;
-    --text3: #787870;
-    --accent: #c8b89a;
-    --accent2: #8a7a65;
-    --white: #f0ede8;
+    --bg: #1B1B1A;
+    --bg2: #212120;
+    --bg3: #262625;
+    --border: #313130;
+    --white: #EDEDED;
+    --offwhite: #C7C2B8;
+    --gray: #8C8C8C;
+    --gray-dim: #5C5C58;
+    --red: #A6192E;
   }
 
   html, body {
     min-height: 100vh;
     background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 300;
+    color: var(--white);
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 400;
     line-height: 1.6;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
-  }
-
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 1000;
-    opacity: 0.4;
   }
 
   .page {
@@ -52,71 +40,64 @@
     min-height: 100vh;
     padding: 80px 24px;
     text-align: center;
-    animation: fadeIn 0.6s ease forwards;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
   }
 
   .inner {
     width: 100%;
-    max-width: 560px;
+    max-width: 520px;
   }
 
   .eyebrow {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 10px;
-    letter-spacing: 0.35em;
+    font-size: 11px;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
-    color: var(--accent2);
-    margin-bottom: 32px;
+    color: var(--gray);
+    margin-bottom: 22px;
   }
 
   .title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(52px, 10vw, 96px);
-    font-weight: 300;
-    line-height: 0.9;
-    color: var(--text);
-    margin-bottom: 8px;
-    letter-spacing: -0.02em;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: clamp(40px, 9vw, 64px);
+    line-height: 1;
+    color: var(--white);
+    margin-bottom: 20px;
+    letter-spacing: -0.01em;
   }
 
   .title em {
-    font-style: italic;
-    color: var(--accent);
+    font-style: normal;
+    color: var(--white);
   }
 
   .rule {
     width: 40px;
     height: 1px;
-    background: var(--border2);
-    margin: 32px auto;
+    background: var(--red);
+    margin: 0 auto 28px;
   }
 
   .sub {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(16px, 3vw, 20px);
+    font-family: 'Spectral', serif;
     font-style: italic;
-    color: var(--text2);
+    font-size: clamp(16px, 3vw, 19px);
+    color: var(--offwhite);
     max-width: 440px;
-    margin: 0 auto 16px;
+    margin: 0 auto 18px;
     line-height: 1.5;
   }
 
   .body-text {
     font-size: 13px;
-    color: var(--text3);
+    color: var(--gray);
     max-width: 380px;
     margin: 0 auto 40px;
-    line-height: 1.8;
+    line-height: 1.85;
   }
 
   .body-text strong {
-    color: var(--text2);
-    font-weight: 400;
+    color: var(--offwhite);
+    font-weight: 500;
   }
 
   .bio-block {
@@ -147,17 +128,17 @@
   }
 
   .bio-name {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: 'Spectral', serif;
+    font-weight: 500;
     font-size: 14px;
-    font-weight: 600;
-    color: var(--text);
-    letter-spacing: 0.05em;
+    color: var(--offwhite);
+    letter-spacing: 0.03em;
     margin-bottom: 8px;
   }
 
   .bio-line {
     font-size: 12px;
-    color: var(--text2);
+    color: var(--gray);
     line-height: 1.7;
   }
 
@@ -171,9 +152,9 @@
 
   .form-label {
     font-size: 10px;
-    letter-spacing: 0.25em;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--text3);
+    color: var(--gray);
     margin-bottom: 20px;
     display: block;
   }
@@ -191,18 +172,18 @@
     background: var(--bg3);
     border: 1px solid var(--border);
     padding: 13px 16px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 13px;
-    font-weight: 300;
-    color: var(--text);
+    font-weight: 400;
+    color: var(--white);
     outline: none;
     transition: border-color 0.2s;
     border-radius: 0;
     -webkit-appearance: none;
   }
 
-  .form-block input::placeholder { color: var(--text3); }
-  .form-block input:focus { border-color: var(--accent2); }
+  .form-block input::placeholder { color: var(--gray-dim); }
+  .form-block input:focus { border-color: var(--red); }
 
   .form-email-wrap { margin-bottom: 16px; }
 
@@ -210,37 +191,38 @@
     display: inline-block;
     width: 100%;
     padding: 16px 40px;
-    background: var(--accent);
-    color: #0a0a0a;
-    font-family: 'DM Sans', sans-serif;
+    background: var(--white);
+    color: var(--bg);
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.2em;
+    font-weight: 600;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     border: none;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
     text-align: center;
   }
 
   .btn-primary:hover {
-    background: var(--white);
+    background: var(--red);
+    color: var(--white);
     transform: translateY(-1px);
   }
 
   .form-note {
     font-size: 11px;
-    color: var(--text3);
-    letter-spacing: 0.05em;
+    color: var(--gray-dim);
+    letter-spacing: 0.04em;
     text-align: center;
     margin-top: 14px;
   }
 
   .section-label {
     font-size: 9px;
-    letter-spacing: 0.3em;
+    letter-spacing: 0.26em;
     text-transform: uppercase;
-    color: var(--text3);
+    color: var(--gray-dim);
     margin-bottom: 20px;
     display: block;
   }
@@ -261,47 +243,47 @@
 
   .pattern-num {
     font-size: 9px;
-    letter-spacing: 0.2em;
-    color: var(--accent2);
+    letter-spacing: 0.18em;
+    color: var(--gray);
     margin-bottom: 10px;
     display: block;
   }
 
   .pattern-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 18px;
-    font-weight: 400;
-    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 17px;
+    color: var(--offwhite);
     margin-bottom: 8px;
     line-height: 1.1;
   }
 
   .pattern-desc {
     font-size: 12px;
-    color: var(--text3);
+    color: var(--gray);
     line-height: 1.65;
   }
 
   .quote-block {
-    border-left: 1px solid var(--border2);
-    padding: 4px 0 4px 24px;
+    border-left: 2px solid var(--red);
+    padding: 4px 0 4px 22px;
     margin: 0 0 48px;
     text-align: left;
   }
 
   .quote-text {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 20px;
+    font-family: 'Spectral', serif;
     font-style: italic;
-    color: var(--text2);
+    font-size: 19px;
+    color: var(--white);
     line-height: 1.45;
     margin-bottom: 12px;
   }
 
   .quote-attr {
     font-size: 10px;
-    color: var(--text3);
-    letter-spacing: 0.15em;
+    color: var(--gray-dim);
+    letter-spacing: 0.14em;
     text-transform: uppercase;
   }
 
@@ -315,24 +297,25 @@
 
   .cta-label {
     font-size: 9px;
-    letter-spacing: 0.3em;
+    letter-spacing: 0.26em;
     text-transform: uppercase;
-    color: var(--text3);
+    color: var(--gray);
     margin-bottom: 16px;
   }
 
   .cta-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 28px;
-    font-weight: 300;
-    color: var(--text);
+    font-family: 'Spectral', serif;
+    font-weight: 500;
+    font-style: normal;
+    font-size: 23px;
+    color: var(--white);
     margin-bottom: 12px;
-    line-height: 1.2;
+    line-height: 1.35;
   }
 
   .cta-body {
     font-size: 13px;
-    color: var(--text2);
+    color: var(--gray);
     line-height: 1.7;
     max-width: 380px;
     margin: 0 auto 28px;
@@ -341,23 +324,23 @@
   .btn-outline {
     display: inline-block;
     padding: 14px 36px;
-    border: 1px solid var(--accent2);
-    color: var(--accent);
-    font-family: 'DM Sans', sans-serif;
+    border: 1px solid var(--white);
+    color: var(--white);
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.2em;
+    font-weight: 600;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     cursor: pointer;
     background: transparent;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
     text-decoration: none;
   }
 
   .btn-outline:hover {
-    background: var(--accent);
-    color: #0a0a0a;
-    border-color: var(--accent);
+    background: var(--red);
+    color: var(--white);
+    border-color: var(--red);
     transform: translateY(-1px);
   }
 
@@ -370,9 +353,9 @@
   }
 
   .footer-name {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: 'Spectral', serif;
     font-size: 14px;
-    color: var(--text3);
+    color: var(--gray-dim);
     font-style: italic;
   }
 
@@ -393,11 +376,11 @@
     <div class="eyebrow">Jonathan Treadway</div>
     <div class="title">The <em>Mirror</em></div>
     <div class="rule"></div>
-    <div class="sub">You know the man you're supposed to be. The current version of you keeps sabotaging it.</div>
+    <div class="sub">You know exactly who you're supposed to be. You keep getting in his way.</div>
     <div class="body-text">
       Eight questions. Ten minutes.<br>
-      <strong>No generic advice. No motivational BS.</strong><br>
-      Just an honest look at what's been in the way.
+      <strong>Not a personality quiz.</strong><br>
+      This shows you the gap between who you are and who you want to be.
     </div>
 
     <div class="form-block">
